@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog personal</title>
+    <style>
+        body {
+            margin: 0px;
+        }
+
+        .barra_superior {
+            position: fixed;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            height: 7.5%;
+            background-color: rgb(70, 68, 68);
+            color: white;
+            padding-left: 100px;
+        }
+
+        .text_bar2 {
+            display: flex;
+            justify-content: space-between;
+            gap: 43px;
+            margin-right: 200px;
+            cursor: pointer;
+        }
+
+        .text_bar2 h4:hover {
+            opacity: 1;
+            transform: scale(1.1);
+        }
+
+        .text_inside {
+            display: flex;
+            gap: 43px;
+            color: #bebaba;
+        }
+
+
+        .container {
+            display: grid;
+            grid-template-columns: repeat(1, 1fr);
+            grid-template-rows: repeat(3, auto);
+        }
+
+        .space {
+            background-color: rgb(255, 255, 255);
+            display: flex;
+            align-items: center;
+            justify-content: space-evenly;
+            gap: 10px;
+            padding-top: 50px;
+            flex-wrap: wrap;
+        }
+
+        .img1 {
+            width: 50%;
+        }
+
+        .text1 {
+            text-align: justify;
+            color: #6e6d6d;
+            width: 520px;
+            padding-right: 81px;
+            padding-bottom: 50px;
+        }
+
+        .text1 h1 {
+            margin-bottom: 0%;
+        }
+
+        button {
+            background-color: rgb(70, 68, 68);
+            border-width: 1px;
+            border-radius: 5px;
+            transition: transform 0.5s ease, opacity 0.5s ease;
+        }
+
+        button:hover {
+            opacity: 1;
+            transform: scale(1.1);
+        }
+
+        button p {
+            color: white;
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+            margin: 9px;
+            cursor: pointer;
+        }
+
+        .circle {
+            width: 180px;
+            height: 180px;
+            border-radius: 100px;
+            overflow: hidden;
+            margin: 25px;
+        }
+
+        .circle img {
+            width: 100%;
+            object-fit: cover;
+        }
+
+        #seg {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            background-color: rgb(70, 68, 68);
+            gap: 0px;
+            padding-top: 0%;
+        }
+
+        #seg p {
+            color: white;
+            font-size: 25px;
+            display: flex;
+            justify-content: center;
+            text-align: justify;
+            margin-inline: 100px;
+            margin-bottom: 0%;
+            margin-top: 0%;
+        }
+
+        #seg em {
+            font-size: 20px;
+            padding-top: 10px;
+            padding-bottom: 20px;
+        }
+
+        .space h1 {
+            color: rgb(70, 68, 68);
+            font-size: 50px;
+        }
+
+        .space3 h1 {
+            text-align: center;
+            font-size: 50px;
+            color: #302f2f;
+            font-family: 'Times New Roman', Times, serif;
+        }
+
+        .container_space3 {
+            height: auto;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            padding-inline: 99px;
+            gap: 20px;
+            padding-bottom: 20px;
+        }
+
+        .proyects {
+            display: flex;
+            text-align: justify;
+            align-items: stretch;
+            flex-direction: column;
+            border: 1px solid black;
+            border-radius: 4px;
+            color: #6e6d6d;
+            margin: 0%;
+            padding-bottom: 7px;
+
+        }
+
+        .proyects img {
+            max-width: 100%;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        .proyects img:hover {
+            opacity: 0.8;
+            transform: scale(1.0);
+        }
+
+        .title_proyect {
+            text-align: center;
+            margin-top: 15px;
+            margin-bottom: 0px;
+        }
+
+        .proyects p {
+            padding: 30px;
+            padding-top: 0%;
+            padding-bottom: 0%;
+            margin: 9px;
+        }
+
+        .proyects button {
+            font-size: 12px;
+            cursor: pointer;
+            margin: 20px;
+            margin-inline: 30%;
+            margin-bottom: 25px;
+            ;
+            transition: transform 0.5s ease, opacity 0.5s ease;
+        }
+
+        .proyects button:hover {
+            opacity: 1;
+            transform: scale(1.1);
+        }
+
+        .proyects button p {
+            color: white;
+            padding: 0%;
+        }
+
+        .barra_inferior {
+            position: static;
+            width: 100%;
+            background-color: rgb(41, 39, 39);
+            color: white;
+            text-align: end;
+        }
+
+        .barra_inferior p {
+            padding: 13px;
+            padding-right: 7.5%;
+            font-size: 15px;
+        }
+
+        @media (max-width: 1024px) {
+            .barra_superior {
+                padding-left: 10px;
+                padding-right: 50px;
+                width: 95%;
+            }
+
+            .text_bar2 {
+                margin-right: 0;
+                gap: 20px;
+            }
+
+            .space {
+                flex-direction: column;
+                padding-top: 100px;
+                text-align: center;
+            }
+
+            .img1 {
+                width: 80%;
+            }
+
+            .text1 {
+                width: 90%;
+                padding-right: 0;
+                padding-bottom: 20px;
+            }
+
+            .container_space3 {
+                grid-template-columns: repeat(2, 1fr);
+                padding-inline: 20px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .barra_superior {
+                flex-direction: column;
+                height: auto;
+                padding: 15px;
+                position: static;
+                text-align: center;
+                width: 100%;
+                max-width: none;
+                box-sizing: border-box;
+            }
+
+            .text_bar2 {
+                flex-direction: column;
+                text-align: center;
+                width: 100%;
+                gap: 10px;
+                margin-top: 10px;
+            }
+
+            .text_inside {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .text_bar1 h3,
+            .text_bar2 h4 {
+                margin: 5px;
+            }
+
+            .space {
+                padding-top: 30px;
+            }
+
+            .img1,
+            .text1 {
+                width: auto;
+                padding: 0 15px;
+                margin-bottom: 20px;
+            }
+
+            .img1 img {
+                width: 100%;
+            }
+
+            .text1 h1 {
+                font-size: 40px;
+            }
+
+            .text1 p {
+                    width: 100%;
+            }
+
+            #seg p {
+                margin-inline: 20px;
+            }
+
+            .space3 h1 {
+                font-size: 40px;
+            }
+
+            .container_space3 {
+                grid-template-columns: 1fr;
+                padding-inline: 15px;
+            }
+
+            .proyects {
+                margin-bottom: 20px;
+            }
+
+            .barra_inferior {
+                text-align: center;
+                padding-bottom: 1px;
+                padding-top: 1px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .text_bar2,
+            .text_inside {
+                gap: 6px;
+            }
+
+            #seg p {
+                margin-inline: 14px;
+                font-size: 18px;
+            }
+
+            #seg em {
+                font-size: 16px;
+            }
+
+            .space3 h1 {
+                font-size: 32px;
+            }
+
+            .proyects p {
+                padding-inline: 16px;
+            }
+
+            .proyects button {
+                margin-inline: 20%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="barra_superior">
+        <div class="text_bar1">
+            <h3>Juan Camilo Dávila Rangel</h3>
+        </div>
+        <div class="text_bar2">
+            <h4>Inicio</h4>
+            <div class="text_inside">
+                <h4>¿Quien Soy?</h4>
+                <h4>Proyectos</h4>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="space">
+            <div class="img1">
+                <img src="imagenes/imagen%20escritorio%20sin%20fondo.png"
+                    alt="Hombre sentado en escritorio">
+            </div>
+            <div class="text1">
+                <h1>¿Quien Soy?</h1>
+                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Delectus, doloremque eum laudantium
+                    dolores
+                    porro omnis amet esse officiis deserunt mollitia, saepe recusandae incidunt quia exercitationem
+                    aut!
+                    Voluptas dolore totam error?</p>
+                <button>
+                    <p>Leér más</p>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="space" id="seg">
+        <div class="circle">
+            <img src="imagenes/imagen%20avatar1.avif"
+                alt="Imagen de Avatar">
+        </div>
+        <div class="text2">
+            <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Pariatur modi voluptates eveniet commodi ea
+                officiis rerum aliquam assumenda mollitia, corporis omnis officia ipsum in maiores odit molestias
+                voluptatum ratione delectus.</p>
+            <p><em>- Juan Dávila</em></p>
+        </div>
+    </div>
+    <div class="space3">
+        <h1>Mis Proyectos</h1>
+        <div class="container_space3">
+            <div class="proyects">
+                <img src="imagenes/proyecto1.webp"
+                    alt="Imagen de Proyecto #1">
+                <div class="title_proyect">
+                    <h3>Proyecto 1</h3>
+                </div>
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Mollitia corporis unde ipsa pariatur
+                    quam soluta maiores, illum aliquid qui, maxime magni. Minus ad aliquid in debitis, quidem velit
+                    ea labore!</p>
+                <button>
+                    <p>Ver Proyecto</p>
+                </button>
+            </div>
+            <div class="proyects">
+                <img src="imagenes/proyecto2.jpg"
+                    alt="Imagen de Proyecto #2">
+                <div class="title_proyect">
+                    <h3>Proyecto 2</h3>
+                </div>
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Mollitia corporis unde ipsa pariatur
+                    quam soluta maiores, illum aliquid qui, maxime magni. Minus ad aliquid in debitis, quidem velit
+                    ea labore!</p>
+                <button>
+                    <p>Ver Proyecto</p>
+                </button>
+            </div>
+            <div class="proyects">
+                <img src="imagenes/proyecto3.png"
+                    alt="Imagen de proyecto #3">
+                <div class="title_proyect">
+                    <h3>Proyecto 3</h3>
+                </div>
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Mollitia corporis unde ipsa pariatur
+                    quam soluta maiores, illum aliquid qui, maxime magni. Minus ad aliquid in debitis, quidem velit
+                    ea labore!</p>
+                <button>
+                    <p>Ver Proyecto</p>
+                </button>
+            </div>
+            <div class="proyects">
+                <img src="imagenes/proyecto4.jpg"
+                    alt="Imagen de Proyecto #4">
+                <div class="title_proyect">
+                    <h3>Proyecto 4</h3>
+                </div>
+                <div class="text3">
+                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Mollitia corporis unde ipsa
+                        pariatur
+                        quam soluta maiores, illum aliquid qui, maxime magni. Minus ad aliquid in debitis, quidem
+                        velit
+                        ea labore!</p>
+                </div>
+                <button>
+                    <p>Ver Proyecto</p>
+                </button>
+            </div>
+        </div>
+    </div>
+    </div>
+    <div class="barra_inferior">
+        <p>Copyright © 2024. Todos los derechos reservados.</p>
+    </div>
+</body>
+
+</html>

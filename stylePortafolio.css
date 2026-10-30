@@ -2,7 +2,7 @@ body {
     font-family: 'Press Start 2P', cursive;
     margin: 0;
     padding: 0;
-    background: url('https://cdn.glitch.global/4c46cef8-6e9c-4ebc-80b4-5ceb24089ee9/imagen-fondo.jpg?v=1740708813937') no-repeat center center fixed;
+    background: url('imagenes/imagen-fondo.jpg') no-repeat center center fixed;
     background-size: cover;
     color: #fff;
     text-align: center;
@@ -126,6 +126,13 @@ header {
 /* ------------------------------------------------------------------------------------------ */
 
 @media (max-width: 600px) {
+    header {
+        height: auto;
+        min-height: 110px;
+        padding: 8px 12px;
+        box-sizing: border-box;
+    }
+
     .header {
         display: flex;
         justify-content: center;
@@ -144,25 +151,26 @@ header {
 
     .title h1 {
         width: 100%;
+        font-size: 48px;
     }
 
     .title h1 span {
-        font-size: 75px;
+        font-size: 48px;
         padding-top: 0px;
     }
 
     .grid-container {
         grid-template-columns: 1fr;
-        margin-top: 100px;
         display: flex;
         flex-direction: column;
         justify-items: center;
         margin-top: 5px;
-        padding-left: 30px;
+        padding: 12px;
     }
 
     .project {
-        width: 90%;
+        width: 100%;
+        box-sizing: border-box;
     }
 
 }

@@ -1,0 +1,314 @@
+body {
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    font-family: 'Press Start 2P', cursive;
+}
+
+
+body::before {
+    content: "";
+    position: fixed;
+    background-image: url('imagenes/fondo-bodyPokecard.jpg');
+    background-size: cover;
+    background-position: center;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+}
+
+.tarjeta {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    border-radius: 20px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+    transition: all 0.4s ease-in-out;
+    width: 500px;
+    height: auto;
+    padding: 25px;
+    position: relative;
+    text-align: center;
+    overflow: hidden;
+    border: 1px solid black;
+    max-width: 90%;
+}
+
+.tarjeta:hover {
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 0 30px rgba(255, 255, 255, 0.2);
+    transform: scale(1.005);
+}
+
+.tarjeta::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 200%;
+    height: 100%;
+    background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transition: left 0.5s ease-in-out;
+    z-index: -1;
+}
+
+.tarjeta:hover::before {
+    left: 100%;
+}
+
+.header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.header h1 {
+    font-size: 2rem;
+    color: #222;
+    margin: 10px 0 0 0;
+}
+
+.pokemon {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.pokemon p {
+    font-size: 1.2rem;
+    color: #ffffff;
+    margin: 6px 0;
+    text-shadow: 0 0 5px rgba(133, 43, 43, 0.5);
+}
+
+#pokemonNombre {
+    font-family: 'Press Start 2P', cursive;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+#pokemonNumero {
+    font-size: 1rem;
+    color: black;
+    margin: 15px 0 10px 0;
+}
+
+.pokemonImagen {
+    text-align: center;
+    transition: left 0.5s ease-in-out;
+    display: flex;
+    justify-content: center;
+    position: relative;
+    border: 1px solid black;
+    background-image: linear-gradient(rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.1)), url('imagenes/fondo_Pokem%C3%B3n.avif');
+    background-position: top;
+    background-size: cover;
+}
+
+#imagenPokemon {
+    width: 200px;
+    height: 200px;
+}
+
+.pokemonImagen p {
+    display: flex;
+    align-self: center;
+    font-size: large;
+}
+
+.informacion {
+    display: flex;
+    border: 1px solid black;
+    padding: 10px;
+    gap: 30px;
+}
+
+.bloqueInformacion {
+    width: 50%;
+    margin: 5px 0;
+    font-size: 0.65rem;
+}
+
+.bloqueInformacion strong {
+    display: block;
+    margin-bottom: 4px
+}
+
+.tipoContenido span {
+    padding: 5px 8px;
+    border-radius: 5px;
+    margin-right: 4px;
+    display: inline-block;
+    color: #000;
+    font-weight: bold;
+    font-size: 0.6rem;
+}
+
+#habilidades {
+    line-height: 1.1;
+}
+
+.estadisticas {
+    margin-top: 20px;
+}
+
+.estadisticasTitulo {
+    margin-bottom: 20px;
+}
+
+.estadisticas p {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.5rem;
+    margin: 5px 0;
+}
+
+.barraEstadistica {
+    margin-bottom: 1px;
+    display: flex;
+    align-items: center;
+    width: 200%;
+    justify-content: space-between;
+    padding-bottom: 5px;
+    gap: 10px;
+}
+
+.valorStat {
+    position: absolute;
+    top: 50%;
+    right: 6px;
+    z-index: 1;
+    text-align: right;
+    font-size: 0.4rem;
+    color: black;
+    line-height: 1;
+    transform: translateY(-50%);
+}
+
+.barraEstadistica label {
+    font-weight: bold;
+    margin-bottom: 4px;
+    flex-grow: 1;
+    text-align: left;
+}
+
+.barraFondo {
+    background: #ddd;
+    border-radius: 10px;
+    height: 15px;
+    overflow: hidden;
+    position: relative;
+    width: 64%;
+}
+
+.barraRelleno {
+    background-color: #4caf50;
+    height: 100%;
+    transition: width 0.5s ease-in-out;
+    border-radius: 10px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    color: white;
+    font-size: 0.6rem;
+    font-weight: bold;
+}
+
+@media (min-width: 769px) and (max-height: 700px) {
+    body {
+        box-sizing: border-box;
+        padding: 18px 0;
+    }
+
+    .tarjeta {
+        padding: 20px;
+    }
+
+    #imagenPokemon {
+        width: 180px;
+        height: 180px;
+    }
+
+    .estadisticas {
+        margin-top: 16px;
+    }
+
+    .estadisticasTitulo {
+        margin-bottom: 12px;
+    }
+
+    .barraEstadistica {
+        margin-bottom: 0;
+        padding-bottom: 3px;
+    }
+}
+
+@media (max-width: 768px) {
+    body {
+        padding: 16px;
+    }
+
+    .tarjeta {
+        width: 100%;
+        max-width: 500px;
+        padding: 20px;
+    }
+
+    .informacion {
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+
+    .bloqueInformacion {
+        width: calc(50% - 6px);
+        min-width: 0;
+    }
+
+    .estadisticasContenido {
+        width: 100%;
+    }
+
+    .barraEstadistica {
+        width: 100%;
+    }
+
+    .barraFondo {
+        width: auto;
+        flex: 1;
+    }
+}
+
+@media (max-width: 420px) {
+    .tarjeta {
+        padding: 14px;
+    }
+
+    .header h1 {
+        font-size: 1.25rem;
+        overflow-wrap: anywhere;
+    }
+
+    .informacion {
+        gap: 8px;
+        padding: 8px;
+    }
+
+    .bloqueInformacion {
+        font-size: 0.55rem;
+    }
+
+    .barraEstadistica {
+        gap: 6px;
+    }
+
+    .barraEstadistica label {
+        min-width: 78px;
+        font-size: 0.45rem;
+    }
+}

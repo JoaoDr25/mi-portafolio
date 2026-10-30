@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="styleVeterinaria.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+	<title>Administrador de Citas</title>
+</head>
+
+<body>
+	<header>
+		<h1>VETERINARIA</h1>
+	</header>
+	<div class="tituloPrincipal">
+		<h2>ADMINISTRADOR DE CITAS</h2>
+	</div>
+
+	<div class="opciones">
+		<div class="estadoFiltro">
+			<label for="filtrarEstado">Filtrar por Estado</label>
+			<select name="filtrarEstado" id="filtrarEstado">
+				<option value="">Todos</option>
+				<option value="abierta">Abierta</option>
+				<option value="terminada">Terminada</option>
+				<option value="anulada">Anulada</option>
+			</select>
+		</div>
+		<div class="buscaCita">
+			<label for="buscarCita">Buscar Cita</label>
+			<input type="text" class="citaBuscar" id="buscarCita" placeholder="Nombre Mascota o Propietario">
+		</div>
+		<div class="btnAgregarCita">
+			<input type="button" class="agregarCita" id="agregarCita" value="AGREGAR CITA">
+		</div>
+	</div>
+
+
+	<div class="contenidoCitas" id="contenidoCitas">
+		<p>No hay citas para mostrar.</p>
+	</div>
+
+	<div class="modalAgregarCita" id="agregarCitaModal">
+		<div class="formulario" id="formularioAgregar">
+			<div class="headerAgregar">
+				<h2 id="tituloFormulario">CREAR NUEVA CITA</h2>
+				<button id="botonFormulario">X</button>
+			</div>
+			<div class="contenidoFormulario">
+				<form class="formulario" id="formulario">
+					<div class="filaFormulario">
+						<div class="campoFormulario">
+							<label for="nombreMascotaInput">Nombre de la Mascota</label>
+							<input type="text" id="nombreMascotaInput" placeholder="Escriba el nombre de la mascota">
+						</div>
+						<div class="campoFormulario">
+							<label for="nombrePropietarioInput">Nombre del Propietario</label>
+							<input type="text" id="nombrePropietarioInput" placeholder="Escriba el nombre del propietario">
+						</div>
+						<div class="campoFormulario">
+							<label for="telefonoContactoInput">Telefono de Contacto</label>
+							<input type="number" id="telefonoContactoInput" placeholder="Ingrese el Telefono de Contacto">
+						</div>
+					</div>
+
+					<div class="filaFormulario">
+						<div class="campoFormulario">
+							<label for="fechaCitaInput">Fecha de la Cita</label>
+							<input type="date" id="fechaCitaInput">
+						</div>
+						<div class="campoFormulario">
+							<label for="horaCitaInput">Hora de la Cita</label>
+							<input type="time" id="horaCitaInput">
+						</div>
+						<div class="campoFormulario">
+							<label for="tipoMascotaInput">Tipo de Mascota</label>
+							<select name="seleccionarMascota" id="tipoMascotaInput">
+								<option value="">Seleccionar...</option>
+								<option value="perro">Perro</option>
+								<option value="gato">Gato</option>
+								<option value="pez">Pez</option>
+								<option value="loro">Loro</option>
+								<option value="serpiente">Serpiente</option>
+								<option value="rana">Rana</option>
+							</select>
+						</div>
+					</div>
+
+					<div class="campoFormulario campoSintomas">
+						<label for="sintomasMascotaInput">Sintomas</label>
+						<textarea id="sintomasMascotaInput"
+							placeholder="Escriba detalladamente los sintomas que presenta"></textarea>
+					</div>
+				</form>
+
+			</div>
+			<div class="botones">
+				<button class="botonCerrar" id="botonCerrar">CERRAR</button>
+				<button class="botonGuardar" id="botonGuardar">GUARDAR</button>
+			</div>
+
+		</div>
+	</div>
+
+	<footer>
+		<p>Todos los derechos reservados.</p>
+	</footer>
+
+	<script>
+		let citas = [];
+		let citaEnEdicion = null;
+		const iconosMascota = {
+			perro: "fa-dog",
+			gato: "fa-cat",
+			pez: "fa-fish",
+			loro: "fa-dove",
+			serpiente: "serpiente",
+			rana: "fa-frog"
+		};
+
+		const filtrarEstado = document.getElementById("filtrarEstado");
+		const buscarCita = document.getElementById("buscarCita");
+		const agregarCita = document.getElementById("agregarCita");
+		const agregarCitaModal = document.getElementById("agregarCitaModal");
+
+		const formulario = document.getElementById("formulario");
+		const tituloFormulario = document.getElementById("tituloFormulario");
+		const botonFormulario = document.getElementById("botonFormulario");
+
+		const nombreMascota = document.getElementById("nombreMascotaInput");
+		const nombrePropietario = document.getElementById("nombrePropietarioInput");
+		const telefonoContacto = document.getElementById("telefonoContactoInput");
+		const fechaCita = document.getElementById("fechaCitaInput");
+		const horaCita = document.getElementById("horaCitaInput");
+		const tipoMascota = document.getElementById("tipoMascotaInput");
+		const sintomasMascota = document.getElementById("sintomasMascotaInput");
+
+		const botonCerrar = document.getElementById("botonCerrar");
+		const botonGuardar = document.getElementById("botonGuardar");
+
+		filtrarEstado.addEventListener("change", () => {
+			pintarCitas();
+		});
+
+		buscarCita.addEventListener("input", () => {
+			pintarCitas();
+		});
+
+		agregarCita.addEventListener("click", () => {
+			citaEnEdicion = null;
+			limpiarFormulario();
+			tituloFormulario.textContent = "CREAR NUEVA CITA";
+			agregarCitaModal.style.display = "block";
+		});
+
+		botonFormulario.addEventListener("click", () => {
+			cerrarModal();
+		});
+
+		botonCerrar.addEventListener("click", () => {
+			cerrarModal();
+		});
+
+		botonGuardar.addEventListener("click", () => {
+			guardarCita();
+		});
+
+		function obtenerDatosFormulario() {
+			const mascota = nombreMascota.value.trim();
+			if (mascota === "") {
+				Swal.fire({
+					icon: 'warning',
+					title: 'Campo requerido',
+					text: 'Por favor escriba el nombre de la mascota!',
+					confirmButtonText: 'Entendido',
+				});
+				return null;
+			};
+
+			const propietario = nombrePropietario.value.trim();
+			if (propietario === "") {
+				Swal.fire({
+					icon: 'warning',
+					title: 'Campo requerido',
+					text: 'Por favor escriba el nombre del propietario!',
+					confirmButtonText: 'Entendido',
+				});
+				return null;
+			};
+
+			const fecha = fechaCita.value.trim();
+			if (fecha === "") {
+				Swal.fire({
+					icon: 'warning',
+					title: 'Campo requerido',
+					text: 'Por favor seleccione la fecha de la cita!',
+					confirmButtonText: 'Entendido',
+				});
+				return null;
+			};
+
+			const hora = horaCita.value.trim();
+			if (hora === "") {
+				Swal.fire({
+					icon: 'warning',
+					title: 'Campo requerido',
+					text: 'Por favor selecciona la hora de la cita!',
+					confirmButtonText: 'Entendido',
+				});
+				return null;
+			};
+
+			const fechaActual = new Date();
+			const fechaCitaSeleccionada = new Date(`${fecha}T${hora}`);
+			if (fechaCitaSeleccionada < fechaActual) {
+				Swal.fire({
+					icon: 'warning',
+					title: 'Fecha invalida',
+					text: 'La fecha debe ser posterior al momento actual.',
+					confirmButtonText: 'Entendido',
+				});
+				return null;
+			};
+
+			const [horaSeleccionada, minutosSeleccionados] = hora.split(":").map(Number);
+			if (horaSeleccionada < 8 || horaSeleccionada > 20 || (horaSeleccionada === 20 && minutosSeleccionados > 0)) {
+				Swal.fire({
+					icon: 'warning',
+					title: 'Hora no válida',
+					text: 'La hora debe estar entre las 08:00 y las 20:00!',
+					confirmButtonText: 'Entendido',
+				});
+				return null;
+			};
+
+			const telefono = telefonoContacto.value.trim();
+			if (telefono === "") {
+				Swal.fire({
+					icon: 'warning',
+					title: 'Campo requerido',
+					text: 'Por favor digite un telefono de contacto!',
+					confirmButtonText: 'Entendido',
+				});
+				return null;
+			};
+			if (telefono.length < 10) {
+				Swal.fire({
+					icon: 'warning',
+					title: 'Telefono Inválido',
+					text: 'El número de telefono debe tener al menos 10 dígitos!',
+					confirmButtonText: 'Entendido',
+				});
+				return null;
+			};
+
+			const tipo = tipoMascota.value.trim();
+			if (tipo === "") {
+				Swal.fire({
+					icon: 'warning',
+					title: 'Campo requerido',
+					text: 'Por favor seleccione el tipo de mascota!',
+					confirmButtonText: 'Entendido',
+				});
+				return null;
+			};
+
+			const sintomas = sintomasMascota.value.trim();
+			if (sintomas === "") {
+				Swal.fire({
+					icon: 'warning',
+					title: 'Campo requerido',
+					text: 'Por favor escriba los sintomas que presenta la mascota!',
+					confirmButtonText: 'Entendido',
+				});
+				return null;
+			};
+
+			return {
+				mascota,
+				propietario,
+				telefono,
+				fecha,
+				hora,
+				tipo,
+				sintomas,
+				estado: "abierta"
+			};
+		};
+
+		function guardarCita() {
+			const datos = obtenerDatosFormulario();
+			if (datos !== null) {
+				if (citaEnEdicion !== null) {
+					citas[citaEnEdicion] = { ...datos, estado: citas[citaEnEdicion].estado };
+					citaEnEdicion = null;
+					tituloFormulario.textContent = "CREAR NUEVA CITA";
+				} else {
+					citas.push(datos);
+				};
+
+				Swal.fire({
+					icon: 'success',
+					title: '¡Cita guardada!',
+					text: 'La cita fue registrada correctamente!',
+					timer: 3000,
+					showConfirmButton: false
+				});
+
+				guardarEnLocalStorage();
+				pintarCitas();
+				limpiarFormulario();
+				cerrarModal();
+			};
+		};
+
+
+		function limpiarFormulario() {
+			formulario.reset();
+		};
+
+		function seleccionarTipoMascota(tipo) {
+			tipoMascota.querySelector('[data-tipo-antiguo="true"]')?.remove();
+
+			const tipoNormalizado = String(tipo ?? "").toLowerCase();
+			const opcionDisponible = [...tipoMascota.options].find(
+				opcion => opcion.value.toLowerCase() === tipoNormalizado
+			);
+
+			if (opcionDisponible) {
+				tipoMascota.value = opcionDisponible.value;
+				return;
+			}
+
+			if (!tipoNormalizado) {
+				tipoMascota.value = "";
+				return;
+			}
+
+			const opcionAntigua = document.createElement("option");
+			opcionAntigua.value = tipo;
+			opcionAntigua.textContent = capitalizar(tipoNormalizado);
+			opcionAntigua.dataset.tipoAntiguo = "true";
+			tipoMascota.appendChild(opcionAntigua);
+			tipoMascota.value = tipo;
+		};
+
+		function cerrarModal() {
+			agregarCitaModal.style.display = "none";
+			citaEnEdicion = null;
+			tituloFormulario.textContent = "CREAR NUEVA CITA";
+			tipoMascota.querySelector('[data-tipo-antiguo="true"]')?.remove();
+		};
+
+		function crearDetalleCita(etiqueta, valor) {
+			const detalle = document.createElement("span");
+			detalle.classList.add("detalleCita");
+
+			const clave = document.createElement("strong");
+			clave.textContent = `${etiqueta}: `;
+			detalle.appendChild(clave);
+
+			const contenido = document.createElement("span");
+			contenido.classList.add("valorCita");
+			contenido.textContent = valor;
+			detalle.appendChild(contenido);
+
+			return detalle;
+		}
+
+		function pintarCitas() {
+			const contenidoCitas = document.getElementById("contenidoCitas");
+			contenidoCitas.innerHTML = "";
+
+			const estadoSeleccionado = filtrarEstado.value;
+			const textoBusqueda = buscarCita.value.trim().toLowerCase();
+
+			let citasFiltradas = estadoSeleccionado
+				? citas.filter(cita => cita.estado === estadoSeleccionado)
+				: citas;
+
+			citasFiltradas = citasFiltradas.filter(cita => {
+				const nombreMascota = cita.mascota.toLowerCase();
+				const nombrePropietario = cita.propietario.toLowerCase();
+				return (
+					nombreMascota.includes(textoBusqueda) || nombrePropietario.includes(textoBusqueda)
+				);
+			});
+
+			if (citasFiltradas.length === 0) {
+				const mensaje = document.createElement("p");
+				mensaje.textContent = "No se encontraron citas.";
+				contenidoCitas.appendChild(mensaje);
+				return;
+			};
+
+			citasFiltradas.forEach((cita, index) => {
+				const divContenido = document.createElement("div");
+				divContenido.classList.add("divContenido");
+				contenidoCitas.prepend(divContenido);
+
+				const iconoMascota = document.createElement("span");
+				iconoMascota.classList.add("iconoMascota");
+				iconoMascota.setAttribute("aria-hidden", "true");
+				const tipoMascota = cita.tipo.toLowerCase();
+				const iconoMascotaNombre = iconosMascota[tipoMascota];
+				if (iconoMascotaNombre === "serpiente") {
+					const siluetaMascota = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+					siluetaMascota.setAttribute("viewBox", "0 0 64 64");
+					const simboloMascota = document.createElementNS("http://www.w3.org/2000/svg", "use");
+					simboloMascota.setAttribute("href", `siluetas-mascotas.svg#${iconoMascotaNombre}`);
+					siluetaMascota.appendChild(simboloMascota);
+					iconoMascota.appendChild(siluetaMascota);
+				} else {
+					const siluetaMascota = document.createElement("i");
+					siluetaMascota.classList.add("fa-solid", iconoMascotaNombre || "fa-paw");
+					iconoMascota.appendChild(siluetaMascota);
+				}
+				divContenido.appendChild(iconoMascota);
+
+				const nombreMascotaElemento = document.createElement("h2");
+				nombreMascotaElemento.textContent = capitalizar(cita.mascota);
+				nombreMascotaElemento.classList.add("mascota");
+				divContenido.appendChild(nombreMascotaElemento);
+
+				const nombrePropietarioElemento = document.createElement("p");
+				nombrePropietarioElemento.classList.add("propietario");
+				nombrePropietarioElemento.appendChild(crearDetalleCita("Propietario", capitalizar(cita.propietario)));
+				divContenido.appendChild(nombrePropietarioElemento);
+
+				const telefonoContactoElemento = document.createElement("p");
+				telefonoContactoElemento.classList.add("telefono");
+				telefonoContactoElemento.appendChild(crearDetalleCita("Telefono", cita.telefono));
+				divContenido.appendChild(telefonoContactoElemento);
+
+				const fechaHoraElemento = document.createElement("p");
+				fechaHoraElemento.classList.add("fechaHora");
+				fechaHoraElemento.appendChild(crearDetalleCita("Fecha", `${cita.fecha},`));
+				fechaHoraElemento.appendChild(document.createTextNode(" "));
+				fechaHoraElemento.appendChild(crearDetalleCita("Hora", cita.hora));
+				divContenido.appendChild(fechaHoraElemento);
+
+				const tipoMascotaElemento = document.createElement("p");
+				tipoMascotaElemento.classList.add("tipo");
+				tipoMascotaElemento.appendChild(crearDetalleCita("Tipo", capitalizar(cita.tipo)));
+				divContenido.appendChild(tipoMascotaElemento);
+
+				const sintomasMascotaElemento = document.createElement("p");
+				sintomasMascotaElemento.classList.add("sintomas");
+				sintomasMascotaElemento.appendChild(crearDetalleCita("Síntomas", capitalizar(cita.sintomas)));
+				divContenido.appendChild(sintomasMascotaElemento);
+
+				const divEstado = document.createElement("div");
+				divEstado.classList.add("divEstado");
+				divContenido.appendChild(divEstado);
+
+				const estadoActual = document.createElement("label");
+				estadoActual.textContent = 'Estado:';
+				estadoActual.classList.add("estado");
+				divEstado.appendChild(estadoActual);
+
+				const selectEstado = document.createElement("select");
+				const estados = ["abierta", "terminada", "anulada"];
+				estados.forEach(estado => {
+					const option = document.createElement("option");
+					option.value = estado;
+					option.textContent = estado.charAt(0).toUpperCase() + estado.slice(1);
+					if (cita.estado === estado) option.selected = true;
+					selectEstado.appendChild(option);
+				});
+
+				selectEstado.addEventListener("change", (e) => {
+					cita.estado = e.target.value;
+					guardarEnLocalStorage();
+				});
+				divEstado.appendChild(selectEstado);
+
+				const divBotones = document.createElement("div");
+				divBotones.classList.add("divBotones");
+				divContenido.appendChild(divBotones);
+
+				const botonEditar = document.createElement("button");
+				botonEditar.classList.add("botonEditar");
+				botonEditar.textContent = "📝";
+				divBotones.appendChild(botonEditar);
+
+				botonEditar.addEventListener("click", () => {
+					document.getElementById("tituloFormulario").textContent = "EDITAR CITA EXISTENTE";
+
+					citaEnEdicion = index;
+					agregarCitaModal.style.display = "block";
+
+					const citaEditar = citas[index];
+
+					nombreMascota.value = citaEditar.mascota;
+					nombrePropietario.value = citaEditar.propietario;
+					telefonoContacto.value = citaEditar.telefono;
+					fechaCita.value = citaEditar.fecha;
+					horaCita.value = citaEditar.hora;
+					seleccionarTipoMascota(citaEditar.tipo);
+					sintomasMascota.value = citaEditar.sintomas;
+				});
+
+				const botonEliminar = document.createElement("button");
+				botonEliminar.classList.add("botonEliminar");
+				botonEliminar.textContent = "❌";
+				divBotones.appendChild(botonEliminar);
+
+				botonEliminar.addEventListener("click", () => {
+					eliminarCita(index);
+				});
+			});
+		};
+
+		function eliminarCita(index) {
+			Swal.fire({
+				title: '¿Eliminar esta cita?',
+				text: '¿Desea eliminar esta cita para siempre?',
+				icon: 'warning',
+				showCancelButton: true,
+				confirmButtonColor: '#28a745',
+				cancelButtonColor: '#6c757d',
+				confirmButtonText: 'Sí, eliminar',
+				cancelButtonText: 'Cancelar',
+			}).then((result) => {
+				if (result.isConfirmed) {
+					citas.splice(index, 1);
+					guardarEnLocalStorage();
+					pintarCitas();
+					Swal.fire({
+						icon: 'success',
+						title: '¡Cita eliminada!',
+						text: 'La cita ha sido eliminada correctamente!',
+						confirmButtonColor: '#28a745',
+						timer: 3000,
+						showConfirmButton: false
+					});
+				}
+			});
+		};
+
+		function guardarEnLocalStorage() {
+			localStorage.setItem("citasVeterinaria", JSON.stringify(citas));
+		};
+
+		function cargarEnLocalStorage() {
+			const citasGuardadas = localStorage.getItem("citasVeterinaria");
+			if (citasGuardadas) {
+				citas = JSON.parse(citasGuardadas);
+				pintarCitas();
+			}
+		};
+
+		window.onload = () => {
+			cargarEnLocalStorage();
+		};
+
+		function capitalizar(palabra) {
+			return palabra.charAt(0).toUpperCase() + palabra.slice(1);
+		};
+
+	</script>
+
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+</body>
+
+</html>
