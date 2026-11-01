@@ -1,38 +1,45 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Superhéroes</title>
     <style>
+        :root {
+            color-scheme: light;
+            --ink: #17212b;
+            --signal-red: #d83a32;
+            --signal-gold: #f5c451;
+            --paper: #f0f0f0;
+        }
+
         body {
-            background-color: #f0f0f0;
+            background-color: var(--paper);
             margin: 0;
-            padding: 10px 0 0 0;
+            padding: 10px 0 0;
         }
 
         .container {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(3, minmax(0, 1fr));
             grid-template-rows: repeat(4, auto);
             gap: 15px;
-            padding: 15px 50px 50px 50px;
-            background-color: #f0f0f0;
+            padding: 15px 50px 50px;
+            background-color: var(--paper);
         }
 
         .space {
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
-            align-items: stretch;
+            display: block;
+            min-width: 0;
+            padding: 0;
+            border: 1px solid var(--ink);
             border-radius: 12px;
-            border: 1px solid black;
-            font-size: 16px;
-            background-color: white;
+            background: var(--ink);
             overflow: hidden;
-            text-align: center;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+            cursor: pointer;
+            line-height: 0;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
             transition: transform 0.25s ease, box-shadow 0.25s ease;
             animation: card-entrance 0.45s ease both;
         }
@@ -55,20 +62,25 @@
         }
 
         .space img {
+            display: block;
             width: 100%;
             height: auto;
             aspect-ratio: 2 / 3;
             box-sizing: border-box;
-            padding: 0;
-            border-radius: 12px;
+            border-radius: 11px;
             object-fit: cover;
             transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        .space:focus-visible {
+            outline: 4px solid var(--signal-gold);
+            outline-offset: 3px;
         }
 
         @media (hover: hover) {
             .space:hover {
                 transform: translateY(-4px);
-                box-shadow: 0 8px 18px rgba(0, 0, 0, 0.16);
+                box-shadow: 0 8px 18px rgba(0, 0, 0, 0.2);
             }
 
             .space:hover img {
@@ -77,39 +89,94 @@
             }
         }
 
-        .space h2 {
-            color: black;
-            margin: 12px 0 4px;
-            padding: 0 12px;
-            font-size: clamp(18px, 2vw, 24px);
-            overflow-wrap: anywhere;
-            transition: color 0.25s ease;
-            font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif
+        .hero-modal {
+            width: min(520px, calc(100% - 36px));
+            max-height: min(680px, calc(100% - 36px));
+            box-sizing: border-box;
+            padding: 0;
+            border: 2px solid var(--signal-gold);
+            border-radius: 8px;
+            color: #f8f6ef;
+            background: var(--ink);
+            box-shadow: 0 24px 80px rgba(0, 0, 0, 0.45);
+            overflow: auto;
         }
 
-        .space p {
-            color: black;
-            padding: 5px 12px;
+        .hero-modal::backdrop {
+            background: rgba(8, 14, 20, 0.78);
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 16px;
+            padding: 24px 24px 18px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+            background: linear-gradient(115deg, #263646, var(--ink) 70%);
+        }
+
+        .modal-kicker {
+            margin: 0 0 7px;
+            color: var(--signal-gold);
+            font: 700 0.72rem/1.2 'Trebuchet MS', sans-serif;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+        }
+
+        .hero-modal h2 {
             margin: 0;
-            display: grid;
-            grid-template-columns: 104px minmax(0, 1fr);
-            column-gap: 8px;
-            align-items: start;
-            text-align: left;
-            font-size: 14px;
-            line-height: 1.4;
+            color: white;
+            font: 800 clamp(1.5rem, 6vw, 2rem)/1.1 'Trebuchet MS', sans-serif;
             overflow-wrap: anywhere;
-            font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
         }
 
-        .space p b {
-            font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-            font-size: 0.78rem;
-            color: #454545;
+        .modal-close {
+            flex: 0 0 40px;
+            width: 40px;
+            height: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.38);
+            border-radius: 4px;
+            color: white;
+            background: transparent;
+            font: 400 1.6rem/1 sans-serif;
+            cursor: pointer;
         }
 
-        .space:hover h2 {
-            color: #176f9c;
+        .modal-close:hover,
+        .modal-close:focus-visible {
+            border-color: var(--signal-gold);
+            color: var(--signal-gold);
+        }
+
+        .modal-details {
+            display: grid;
+            gap: 18px;
+            padding: 22px 24px 26px;
+        }
+
+        .modal-details section {
+            padding-left: 14px;
+            border-left: 3px solid var(--signal-red);
+        }
+
+        .modal-details section:last-child {
+            border-left-color: var(--signal-gold);
+        }
+
+        .modal-details h3 {
+            margin: 0 0 7px;
+            color: #fff;
+            font: 800 0.78rem/1.3 'Trebuchet MS', sans-serif;
+            letter-spacing: 0.08em;
+        }
+
+        .modal-details p {
+            margin: 0;
+            color: #d7dfe5;
+            font: 400 1rem/1.55 'Trebuchet MS', sans-serif;
+            overflow-wrap: anywhere;
         }
 
         @media (max-width: 1000px) {
@@ -117,10 +184,6 @@
                 grid-template-columns: repeat(2, minmax(0, 1fr));
                 grid-template-rows: auto;
                 padding: 15px 24px;
-            }
-
-            .space img {
-                height: auto;
             }
         }
 
@@ -131,19 +194,12 @@
                 gap: 12px;
             }
 
-            .space img {
-                height: auto;
+            .modal-header {
+                padding: 20px 18px 16px;
             }
 
-            .space p {
-                padding-inline: 10px;
-                font-size: 13px;
-                grid-template-columns: 92px minmax(0, 1fr);
-                column-gap: 6px;
-            }
-
-            .space p b {
-                font-size: 0.72rem;
+            .modal-details {
+                padding: 20px 18px 22px;
             }
         }
 
@@ -161,10 +217,6 @@
             .space:hover img {
                 transform: none;
             }
-
-            .space h2 {
-                transition: none;
-            }
         }
 
     </style>
@@ -172,80 +224,95 @@
 
 <body>
     <div class="container">
-        <div class="space">
+        <button class="space" type="button" aria-label="Ver información de Aquaman" data-name="AQUAMAN" data-powers="Tiene fuerza y resistencia sobrehumanas." data-weaknesses="Necesita hidratarse constantemente para mantener sus poderes.">
             <img src="imagenes/aquaman.webp" alt="Imagen de Aquaman">
-            <h2>AQUAMAN</h2>
-            <p><b>PODERES:</b> Tiene fuerza y resistencia sobrehumanas. </p>
-            <p><b>DEBILIDADES:</b> Necesita hidratarse constantemente para mantener sus poderes.</p>
-        </div>
-        <div class="space">
+        </button>
+        <button class="space" type="button" aria-label="Ver información de Batman" data-name="BATMAN" data-powers="Artes marciales y entrenamiento físico de nivel máximo." data-weaknesses="Es completamente humano, vulnerable a heridas mortales.">
             <img src="imagenes/batman.jpg" alt="Imagen de Batman">
-            <h2>BATMAN</h2>
-            <p><b>PODERES:</b> Artes marciales y entrenamiento físico de nivel máximo.</p>
-            <p><b>DEBILIDADES:</b> Es completamente humano, vulnerable a heridas mortales. </p>
-        </div>
-        <div class="space">
+        </button>
+        <button class="space" type="button" aria-label="Ver información del Capitán América" data-name="CAPITÁN AMÉRICA" data-powers="Tiene fuerza, velocidad y resistencia mejoradas." data-weaknesses="No tiene protección contra ataques psíquicos o mágicos.">
             <img src="imagenes/captain%20america.jpg" alt="Imagen de Captain America">
-            <h2>CAPITÁN AMÉRICA</h2>
-            <p><b>PODERES:</b> Tiene fuerza, velocidad y resistencia mejoradas.</p>
-            <p><b>DEBILIDADES:</b> No tiene protección contra ataques psíquicos o mágicos. </p>
-        </div>
-        <div class="space">
+        </button>
+        <button class="space" type="button" aria-label="Ver información de Deadpool" data-name="DEADPOOL" data-powers="Regeneración extrema que lo hace inmortal y gran agilidad y fuerza mejorada." data-weaknesses="Inestabilidad mental afecta sus decisiones.">
             <img src="imagenes/deadpool.jpg" alt="Imagen de Deadpool">
-            <h2>DEADPOOL</h2>
-            <p><b>PODERES:</b> Regeneración extrema que lo hace inmortal y gran agilidad y fuerza mejorada. </p>
-            <p><b>DEBILIDADES:</b> Inestabilidad mental afecta sus decisiones. </p>
-        </div>
-        <div class="space">
+        </button>
+        <button class="space" type="button" aria-label="Ver información de Flash" data-name="FLASH" data-powers="Velocidad extrema gracias a la Fuerza de la Velocidad." data-weaknesses="Fatiga física o mental por uso excesivo de su velocidad.">
             <img src="imagenes/flash.jpg" alt="Imagen de Flash">
-            <h2>FLASH</h2>
-            <p><b>PODERES:</b> Velocidad extrema gracias a la Fuerza de la Velocidad. </p>
-            <p><b>DEBILIDADES:</b> Fatiga física o mental por uso excesivo de su velocidad. </p>
-        </div>
-        <div class="space">
+        </button>
+        <button class="space" type="button" aria-label="Ver información de Hulk" data-name="HULK" data-powers="Cuanto más se enfada, más fuerte se vuelve." data-weaknesses="Transformación incontrolada, especialmente cuando se calma.">
             <img src="imagenes/hulk.webp" alt="Imagen de Hulk">
-            <h2>HULK</h2>
-            <p><b>PODERES:</b> Cuanto más se enfada, más fuerte se vuelve. </p>
-            <p><b>DEBILIDADES:</b> Transformación incontrolada, especialmente cuando se calma. </p>
-        </div>
-        <div class="space">
+        </button>
+        <button class="space" type="button" aria-label="Ver información de Iron Man" data-name="IRON MAN" data-powers="Vuelo, rayos repulsores, y protección contra ataques físicos." data-weaknesses="Dependencia del traje, sin él es vulnerable.">
             <img src="imagenes/iron%20man.webp" alt="Imagen de Iron Man">
-            <h2>IRON MAN</h2>
-            <p><b>PODERES:</b> Vuelo, rayos repulsores, y protección contra ataques físicos. </p>
-            <p><b>DEBILIDADES:</b> Dependencia del traje, sin él es vulnerable. </p>
-        </div>
-        <div class="space">
+        </button>
+        <button class="space" type="button" aria-label="Ver información de Spiderman" data-name="SPIDERMAN" data-powers="Capacidad para trepar paredes y uso de telarañas" data-weaknesses="Veneno específico para arañas y ataques sónicos y químicos fuertes.">
             <img src="imagenes/spiderman.png" alt="Imagen de Spiderman">
-            <h2>SPIDERMAN</h2>
-            <p><b>PODERES:</b> Capacidad para trepar paredes y uso de telarañas </p>
-            <p><b>DEBILIDADES:</b> Veneno específico para arañas y ataques sónicos y químicos fuertes. </p>
-        </div>
-        <div class="space">
+        </button>
+        <button class="space" type="button" aria-label="Ver información de Superman" data-name="SUPERMAN" data-powers="Fuerza sobrehumana, vuelo a velocidades extremas y visión de rayos x." data-weaknesses="Kryptonita (variedades como verde, roja y negra) y radiación solar roja debilita sus poderes.">
             <img src="imagenes/superman.jpg" alt="Imagen de Superman">
-            <h2>SUPERMAN</h2>
-            <p><b>PODERES:</b> Fuerza sobrehumana, vuelo a velocidades extremas y visión de rayos x. </p>
-            <p><b>DEBILIDADES:</b> Kryptonita (variedades como verde, roja y negra) y radiación solar roja debilita sus
-                poderes. </p>
-        </div>
-        <div class="space">
+        </button>
+        <button class="space" type="button" aria-label="Ver información de Thor" data-name="THOR" data-powers="Fuerza divina y control sobre rayos y tormentas." data-weaknesses="Vulnerable a enemigos con magia superior o igual.">
             <img src="imagenes/thor.jpg" alt="Imagen de thor">
-            <h2>THOR</h2>
-            <p><b>PODERES:</b> Fuerza divina y control sobre rayos y tormentas.</p>
-            <p><b>DEBILIDADES:</b> Vulnerable a enemigos con magia superior o igual. </p>
-        </div>
-        <div class="space">
+        </button>
+        <button class="space" type="button" aria-label="Ver información de Wolverine" data-name="WOLVERINE" data-powers="Factor de curación que lo hace casi inmortal y garras retráctiles de adamantium." data-weaknesses="Vulnerable a envenenamiento o magnetismo por su esqueleto metálico.">
             <img src="imagenes/wolverine.jpg" alt="Imagen de Wolverine">
-            <h2>WOLVERINE</h2>
-            <p><b>PODERES:</b> Factor de curación que lo hace casi inmortal y garras retráctiles de adamantium. </p>
-            <p><b>DEBILIDADES:</b> Vulnerable a envenenamiento o magnetismo por su esqueleto metálico. </p>
-        </div>
-        <div class="space">
+        </button>
+        <button class="space" type="button" aria-label="Ver información de la Mujer Maravilla" data-name="MUJER MARAVILLA" data-powers="Fuerza sobrehumana, velocidad extrema y armamento mágico." data-weaknesses="Vulnerable a armas mágicas o divinas.">
             <img src="imagenes/wonder%20woman.jpg" alt="Imagen de Wonder Woman">
-            <h2>MUJER MARAVILLA</h2>
-            <p><b>PODERES:</b> Fuerza sobrehumana, velocidad extrema y armamento mágico. </p>
-            <p><b>DEBILIDADES:</b> Vulnerable a armas mágicas o divinas. </p>
-        </div>
+        </button>
     </div>
+
+    <dialog class="hero-modal" aria-labelledby="hero-name">
+        <div class="modal-header">
+            <div>
+                <p class="modal-kicker">Archivo de héroe</p>
+                <h2 id="hero-name"></h2>
+            </div>
+            <button class="modal-close" type="button" aria-label="Cerrar ventana">&times;</button>
+        </div>
+        <div class="modal-details">
+            <section>
+                <h3>PODERES</h3>
+                <p id="hero-powers"></p>
+            </section>
+            <section>
+                <h3>DEBILIDADES</h3>
+                <p id="hero-weaknesses"></p>
+            </section>
+        </div>
+    </dialog>
+
+    <script>
+        const heroModal = document.querySelector('.hero-modal');
+        const heroName = document.querySelector('#hero-name');
+        const heroPowers = document.querySelector('#hero-powers');
+        const heroWeaknesses = document.querySelector('#hero-weaknesses');
+
+        document.querySelectorAll('.space').forEach((card) => {
+            card.addEventListener('click', () => {
+                heroName.textContent = card.dataset.name;
+                heroPowers.textContent = card.dataset.powers;
+                heroWeaknesses.textContent = card.dataset.weaknesses;
+                heroModal.showModal();
+            });
+        });
+
+        document.querySelector('.modal-close').addEventListener('click', () => {
+            heroModal.close();
+        });
+
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape' && heroModal.open) {
+                heroModal.close();
+            }
+        });
+
+        heroModal.addEventListener('click', (event) => {
+            if (event.target === heroModal) {
+                heroModal.close();
+            }
+        });
+    </script>
 </body>
 
 </html>
